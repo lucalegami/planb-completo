@@ -1,0 +1,42 @@
+[
+  {
+    "simbolo": "AAPL",
+    "prezzo": "199.49",
+    "SMA_4": "204.26",
+    "SMA_18": "202.81",
+    "SMA_40": "207.68",
+    "segnale": "⏳ In attesa di condizioni Delphi"
+  },
+  {
+    "simbolo": "MSFT",
+    "prezzo": "435.18",
+    "SMA_4": "433.01",
+    "SMA_18": "393.04",
+    "SMA_40": "386.68",
+    "segnale": "🟢 Segnale di acquisto"
+  },
+  {
+    "simbolo": "AMZN",
+    "prezzo": "185.50",
+    "SMA_4": "188.01",
+    "SMA_18": "182.38",
+    "SMA_40": "187.86",
+    "segnale": "⏳ In attesa di condizioni Delphi"
+  },
+  {
+    "simbolo": "NVDA",
+    "prezzo": "114.18",
+    "SMA_4": "113.53",
+    "SMA_18": "108.01",
+    "SMA_40": "110.12",
+    "segnale": "⏳ In attesa di condizioni Delphi"
+  },
+  {
+    "simbolo": "GOOGL",
+    "prezzo": "163.90",
+    "SMA_4": "163.36",
+    "SMA_18": "157.70",
+    "SMA_40": "158.72",
+    "segnale": "⏳ In attesa di condizioni Delphi"
+  }
+]

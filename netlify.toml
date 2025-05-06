@@ -1,0 +1,5 @@
+[functions]
+  directory = "netlify/functions"
+
+[functions."generate-delphic"]
+  schedule = "0 */2 * * *" # Ogni 2 ore

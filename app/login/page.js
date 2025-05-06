@@ -1,46 +1,55 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (username === 'admin' && password === 'planb') {
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    if (isLoggedIn) {
+      router.push('/');
+    }
+  }, [router]);
+
+  const handleLogin = () => {
+    if (password === 'planb123') {
       localStorage.setItem('isLoggedIn', 'true');
       router.push('/');
     } else {
-      setError('Credenziali non valide');
+      setError('Password errata. Riprova.');
     }
   };
 
   return (
-    <div style={{ padding: '2rem', maxWidth: '400px', margin: 'auto' }}>
-      <h1 style={{ textAlign: 'center', marginBottom: '1rem' }}>🔐 Login</h1>
-      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ padding: '0.5rem', borderRadius: '5px', border: '1px solid #ccc' }}
-        />
-        {error && <p style={{ color: 'red', fontSize: '0.9rem' }}>{error}</p>}
-        <button type="submit" style={{ padding: '0.6rem', borderRadius: '5px', backgroundColor: '#00ff88', color: '#000', fontWeight: 'bold' }}>
-          Accedi
-        </button>
-      </form>
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <h1>🔐 Accesso</h1>
+      <input
+        type="password"
+        value={password}
+        placeholder="Inserisci la password"
+        onChange={(e) => setPassword(e.target.value)}
+        style={{ padding: '0.5rem', fontSize: '1rem', marginTop: '1rem' }}
+      />
+      <br />
+      <button
+        onClick={handleLogin}
+        style={{
+          marginTop: '1rem',
+          padding: '0.5rem 1.5rem',
+          fontSize: '1rem',
+          cursor: 'pointer',
+          background: '#00ff88',
+          border: 'none',
+          borderRadius: '8px',
+        }}
+      >
+        Login
+      </button>
+      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
     </div>
   );
 }
+
