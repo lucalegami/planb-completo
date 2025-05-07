@@ -1,10 +1,13 @@
 [build]
-  publish = "out"
   command = "npm run build"
+  publish = ".next"
 
 [functions]
   node_bundler = "esbuild"
 
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [[scheduled]]
-  name = "generate-delphic"
+  path = "/.netlify/functions/generate-delphic"
   schedule = "0 */2 * * *"
