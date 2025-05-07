@@ -1,59 +1,64 @@
 'use client';
-import React, { useState, Suspense } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
-  return (
-    <Suspense fallback={<div>Caricamento...</div>}>
-      <LoginForm />
-    </Suspense>
-  );
-}
-
-function LoginForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter();
   const params = useSearchParams();
-
   const denied = params.get('denied');
 
-  const handleLogin = () => {
-    if (username && password) {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // ✅ Login corretto: planb / planb
+    if (username === 'planb' && password === 'planb') {
       document.cookie = 'isLoggedIn=true; path=/';
-      router.push('/home');
+      router.push('/home'); // 🔁 Dopo login vai su /home
+    } else {
+      alert('Credenziali errate');
     }
   };
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center', color: 'white' }}>
-      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Effettua il login</h1>
-      {denied && <p style={{ color: 'red' }}>Effettua il login per continuare</p>}
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        style={{ padding: '0.5rem', marginBottom: '1rem', width: '100%' }}
-      />
-      <input
-        placeholder="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ padding: '0.5rem', marginBottom: '1rem', width: '100%' }}
-      />
-      <button
-        onClick={handleLogin}
-        style={{
-          padding: '0.5rem 1rem',
-          backgroundColor: 'white',
-          color: 'black',
-          border: 'none',
-          cursor: 'pointer',
-        }}
+    <div className="flex items-center justify-center min-h-screen bg-black text-white">
+      <form
+        onSubmit={handleLogin}
+        className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-sm"
       >
-        Login
-      </button>
+        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+
+        {/* ⚠️ Mostra messaggio se accesso negato */}
+        {denied && (
+          <p className="text-red-500 text-center mb-4">
+            Effettua il login per continuare
+          </p>
+        )}
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
+        >
+          Accedi
+        </button>
+      </form>
     </div>
   );
 }

@@ -1,11 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/delphic-signals/page": "app/delphic-signals/page.js",
-  "/crypto/page": "app/crypto/page.js",
-  "/login/page": "app/login/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/segnali-wall-street/page": "app/segnali-wall-street/page.js",
-  "/radar/page": "app/radar/page.js",
-  "/home/page": "app/home/page.js",
-  "/proposte/page": "app/proposte/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/login/page": "app/login/page.js"
 }

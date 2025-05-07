@@ -1,77 +1,107 @@
+// netlify/functions/generate-delphic.js
 const fs = require('fs');
 const path = require('path');
 const fetch = (...args) => import('node-fetch').then(res => res.default(...args));
 
 const API_KEY = '5528b8033b7c46c6807ab5ca57bd6445';
-
 const symbols = [
-  'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK.B', 'UNH', 'JNJ',
-  'V', 'XOM', 'PG', 'MA', 'JPM', 'HD', 'LLY', 'ABBV', 'CVX', 'PEP',
-  'KO', 'AVGO', 'MRK', 'WMT', 'ADBE', 'COST', 'TMO', 'CRM', 'BAC', 'MCD',
-  'ORCL', 'ACN', 'DIS', 'ABT', 'LIN', 'NKE', 'DHR', 'QCOM', 'TXN', 'NEE',
-  'UPS', 'WFC', 'INTU', 'PM', 'AMGN', 'AMD', 'HON', 'MS', 'IBM', 'GS'
+  'AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'META', 'BRK.B', 'UNH', 'TSLA', 'XOM',
+  'JNJ', 'JPM', 'V', 'PG', 'LLY', 'HD', 'MA', 'MRK', 'PEP', 'ABBV',
+  'COST', 'AVGO', 'KO', 'ADBE', 'WMT', 'CVX', 'MCD', 'BAC', 'CRM', 'CSCO',
+  'TMO', 'NFLX', 'ABT', 'INTC', 'ACN', 'QCOM', 'LIN', 'NEE', 'DHR', 'WFC',
+  'TXN', 'AMD', 'BMY', 'PM', 'AMGN', 'UNP', 'HON', 'RTX', 'LOW', 'INTU'
 ];
 
-async function fetchPrices(symbol) {
-  const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1day&outputsize=60&apikey=${API_KEY}`;
-
-  try {
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!data.values || data.values.length < 40) return null;
-
-    const close = data.values.map(v => parseFloat(v.close));
-    const price = parseFloat(data.values[0].close);
-
-    const sma = (arr, n) => arr.slice(0, n).reduce((sum, val) => sum + val, 0) / n;
-
-    return {
-      symbol,
-      price: price.toFixed(2),
-      sma4: sma(close, 4).toFixed(2),
-      sma18: sma(close, 18).toFixed(2),
-      sma40: sma(close, 40).toFixed(2),
-    };
-  } catch (err) {
-    console.error(`Errore fetch ${symbol}:`, err);
-    return null;
-  }
+function sma(values, n) {
+  return values.slice(0, n).reduce((sum, val) => sum + val, 0) / n;
 }
 
-// ✅ Scheduled Netlify Function handler
-exports.handler = async function () {
-  const segnali = [];
+function regressionSlope(values) {
+  const n = values.length;
+  const x = [...Array(n).keys()];
+  const xMean = x.reduce((a, b) => a + b, 0) / n;
+  const yMean = values.reduce((a, b) => a + b, 0) / n;
+  const num = x.reduce((sum, xi, i) => sum + (xi - xMean) * (values[i] - yMean), 0);
+  const den = x.reduce((sum, xi) => sum + Math.pow(xi - xMean, 2), 0);
+  return num / den;
+}
 
-  for (const symbol of symbols) {
-    const entry = await fetchPrices(symbol);
-    if (!entry) continue;
+async function fetchDailyHistory(symbol) {
+  const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1day&outputsize=100&apikey=${API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.values || [];
+}
 
-    const { sma4, sma18, sma40, price } = entry;
+async function processSymbol(symbol) {
+  const data = await fetchDailyHistory(symbol);
+  if (data.length < 60) return null;
 
-    const cond1 = parseFloat(sma18) > parseFloat(sma40); // 18 > 40
-    const cond2 = parseFloat(sma4) > parseFloat(sma18);  // 4 > 18
-    const cond3 = parseFloat(sma4) < parseFloat(sma18);  // 4 < 18
+  const close = data.map(d => parseFloat(d.close));
+  const dates = data.map(d => d.datetime);
+  const latestPrice = close[0];
 
-    let segnale = '⏳ In attesa di condizioni Delphic';
-    if (cond1 && cond2) segnale = '🟢 Segnale di acquisto';
-    else if (!cond1 && cond3) segnale = '🔴 Segnale di vendita';
+  const sma4 = sma(close, 4);
+  const sma18 = sma(close, 18);
+  const sma40 = sma(close, 40);
+  const slope = regressionSlope(close.slice(0, 100));
 
-    segnali.push({
-      simbolo: entry.symbol,
-      prezzo: price,
-      SMA_4: sma4,
-      SMA_18: sma18,
-      SMA_40: sma40,
-      segnale,
-    });
+  const valid = sma18 > sma40 && slope > 0;
+  const crossedDown = close[0] < sma18 && valid;
+
+  let signal = '⏳ In attesa';
+  if (crossedDown) {
+    signal = '🟢 Segnale di acquisto';
+  } else if (sma4 < sma18 && sma18 < sma40) {
+    signal = '🔴 Segnale di vendita';
   }
 
-  const outputPath = path.join(__dirname, '../../public/delphic-data.json');
-  fs.writeFileSync(outputPath, JSON.stringify(segnali, null, 2));
-  console.log(`✅ Scritti ${segnali.length} segnali in ${outputPath}`);
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ success: true, count: segnali.length })
+  const entry = {
+    symbol,
+    date: dates[0],
+    price: latestPrice.toFixed(2),
+    sma4: sma4.toFixed(2),
+    sma18: sma18.toFixed(2),
+    sma40: sma40.toFixed(2),
+    slope: slope.toFixed(5),
+    signal
   };
-};
+
+  // Simula performance
+  const buyPrice = sma18 * 1.01;
+  const sellPrice = close[5] || buyPrice * 0.97;
+  const profit = ((sellPrice - buyPrice) / buyPrice) * 100;
+
+  const result = {
+    symbol,
+    buyDate: dates[0],
+    sellDate: dates[5] || dates[1],
+    profitPercent: `${profit >= 0 ? '+' : ''}${profit.toFixed(2)}%`,
+    result: profit > 0 ? 'WIN' : 'LOSS'
+  };
+
+  return { entry, result };
+}
+
+async function run() {
+  const entries = [];
+  const results = [];
+
+  for (const symbol of symbols) {
+    try {
+      const data = await processSymbol(symbol);
+      if (data) {
+        entries.push(data.entry);
+        results.push(data.result);
+      }
+    } catch (err) {
+      console.error('Errore su', symbol, err);
+    }
+  }
+
+  fs.writeFileSync(path.join(__dirname, '../../public/delphic-data.json'), JSON.stringify(entries, null, 2));
+  fs.writeFileSync(path.join(__dirname, '../../public/delphic-performance.json'), JSON.stringify(results, null, 2));
+  console.log('✅ Dati scritti con successo');
+}
+
+run();

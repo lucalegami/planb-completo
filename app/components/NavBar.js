@@ -1,94 +1,76 @@
-'use client';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+"use client";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function NavBar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const status = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(status);
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem('isLoggedIn');
-    router.push('/login');
-  };
-
-  const linkStyle = (path) => ({
-    padding: '0.5rem 1rem',
-    border: pathname === path ? '2px solid #4a70b9' : '2px solid transparent',
-    color: pathname === path ? '#4a70b9' : 'white',
-    textDecoration: 'none',
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    transition: 'all 0.3s ease',
-    borderRadius: '0', // angoli squadrati
-  });
-
-  const hoverStyle = {
-    color: '#4a70b9',
-    borderColor: '#4a70b9',
-  };
-
-  const links = [
-    { href: '/', label: '🏠 Home' },
-    { href: '/dashboard', label: '📊 Dashboard' },
-    { href: '/proposte', label: '💡 Proposte' },
-    { href: '/radar', label: '📡 Radar' },
-    { href: '/crypto', label: '💰 Crypto' },
-    { href: '/segnali-wall-street', label: 'SEGNALI WALL STREET' }
-  ];
+    const isLogged = document.cookie.includes("isLoggedIn=true");
+    setLoggedIn(isLogged);
+  }, [pathname]);
 
   return (
-    <nav style={{
-      padding: '1rem',
-      borderBottom: '1px solid #333',
-      display: 'flex',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      gap: '1rem',
-      backgroundColor: '#0d1117',
-      fontFamily: 'Inter, sans-serif',
-    }}>
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          style={linkStyle(link.href)}
-          onMouseEnter={(e) => Object.assign(e.currentTarget.style, hoverStyle)}
-          onMouseLeave={(e) => Object.assign(e.currentTarget.style, linkStyle(link.href))}
-        >
-          {link.label}
-        </Link>
-      ))}
+    <nav style={styles.nav}>
+      <div style={styles.links}>
+        <Link href="/home" style={linkStyle(pathname, "/home")}>Home</Link>
+        <Link href="/dashboard" style={linkStyle(pathname, "/dashboard")}>Dashboard</Link>
+        <Link href="/proposte" style={linkStyle(pathname, "/proposte")}>Proposte</Link>
+        <Link href="/radar" style={linkStyle(pathname, "/radar")}>Radar</Link>
+        <Link href="/crypto" style={linkStyle(pathname, "/crypto")}>Crypto</Link>
+        <Link href="/segnali-wall-street" style={linkStyle(pathname, "/segnali-wall-street")}>Segnali Wall Street</Link>
+      </div>
 
-      {isLoggedIn && (
-        <button onClick={handleLogout} style={{
-          marginLeft: 'auto',
-          background: 'transparent',
-          border: '2px solid #00ff88',
-          padding: '0.5rem 1rem',
-          borderRadius: '0', // angoli squadrati
-          color: '#00ff88',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-          transition: 'all 0.3s ease',
-        }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#00ff8820';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-          }}
-        >
-          Logout
-        </button>
-      )}
+      <div style={styles.right}>
+        {loggedIn ? (
+          <form action="/logout" method="POST">
+            <button type="submit" style={styles.button}>Logout</button>
+          </form>
+        ) : (
+          <>
+            <Link href="/login" style={styles.button}>LOG IN</Link>
+            <Link href="/signup" style={styles.button}>SIGN IN</Link>
+          </>
+        )}
+      </div>
     </nav>
   );
+}
+
+const styles = {
+  nav: {
+    backgroundColor: "#000",
+    display: "flex",
+    justifyContent: "space-between",
+    padding: "20px 40px",
+    alignItems: "center",
+    fontWeight: "bold",
+  },
+  links: {
+    display: "flex",
+    gap: "20px",
+  },
+  right: {
+    display: "flex",
+    gap: "20px",
+  },
+  button: {
+    color: "#fff",
+    background: "none",
+    border: "none",
+    fontSize: "16px",
+    cursor: "pointer",
+    textDecoration: "none",
+  },
+};
+
+function linkStyle(pathname, target) {
+  return {
+    color: pathname === target ? "#00bfff" : "#fff",
+    fontSize: "16px",
+    textDecoration: pathname === target ? "underline" : "none",
+  };
 }
 
