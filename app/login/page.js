@@ -1,55 +1,59 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  return (
+    <Suspense fallback={<div>Caricamento...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
 
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    if (isLoggedIn) {
-      router.push('/');
-    }
-  }, [router]);
+function LoginForm() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const denied = params.get('denied');
 
   const handleLogin = () => {
-    if (password === 'planb123') {
-      localStorage.setItem('isLoggedIn', 'true');
-      router.push('/');
-    } else {
-      setError('Password errata. Riprova.');
+    if (username && password) {
+      document.cookie = 'isLoggedIn=true; path=/';
+      router.push('/home');
     }
   };
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>🔐 Accesso</h1>
+    <div style={{ padding: '2rem', textAlign: 'center', color: 'white' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Effettua il login</h1>
+      {denied && <p style={{ color: 'red' }}>Effettua il login per continuare</p>}
       <input
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        style={{ padding: '0.5rem', marginBottom: '1rem', width: '100%' }}
+      />
+      <input
+        placeholder="Password"
         type="password"
         value={password}
-        placeholder="Inserisci la password"
         onChange={(e) => setPassword(e.target.value)}
-        style={{ padding: '0.5rem', fontSize: '1rem', marginTop: '1rem' }}
+        style={{ padding: '0.5rem', marginBottom: '1rem', width: '100%' }}
       />
-      <br />
       <button
         onClick={handleLogin}
         style={{
-          marginTop: '1rem',
-          padding: '0.5rem 1.5rem',
-          fontSize: '1rem',
-          cursor: 'pointer',
-          background: '#00ff88',
+          padding: '0.5rem 1rem',
+          backgroundColor: 'white',
+          color: 'black',
           border: 'none',
-          borderRadius: '8px',
+          cursor: 'pointer',
         }}
       >
         Login
       </button>
-      {error && <p style={{ color: 'red', marginTop: '1rem' }}>{error}</p>}
     </div>
   );
 }
-
