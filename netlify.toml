@@ -1,13 +1,24 @@
 [build]
   command = "npm run build"
-  publish = ".next"
+  publish = "out"
 
 [functions]
   node_bundler = "esbuild"
+  directory = "netlify/functions"
 
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-[[scheduled]]
-  path = "/.netlify/functions/generate-delphic"
-  schedule = "0 */2 * * *"
+[[redirects]]
+  from = "/_next/image"
+  to = "/.netlify/images?url=:url&w=:width&q=:quality"
+  status = 200
+  query = { url = ":url", w = ":width", q = ":quality" }
+
+[[redirects]]
+  from = "/_ipx/*"
+  to = "/.netlify/images?url=:url&w=:width&q=:quality"
+  status = 200
+  query = { url = ":url", w = ":width", q = ":quality" }
