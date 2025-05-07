@@ -1,5 +1,10 @@
 [functions]
-  directory = "netlify/functions"
+  node_bundler = "esbuild"
 
-[functions."generate-delphic"]
-  schedule = "0 */2 * * *" # Ogni 2 ore
+[[functions]]
+  path = "/.netlify/functions/generate-delphic"
+  schedule = "0 */2 * * *" # ogni 2 ore
+
+[build]
+  command = "npm run build"
+  publish = "out"
