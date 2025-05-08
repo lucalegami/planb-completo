@@ -1,97 +1,15 @@
 {
   "pages": {
-    "/_not-found/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/_not-found/page-de85c95cc6174eb2.js"
-    ],
     "/layout": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/css/c8814c4ba86a6498.css",
-      "static/chunks/app/layout-9a218af7342015da.js"
-    ],
-    "/logout/route": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/logout/route-bc1ecbf42c91e8cc.js"
-    ],
-    "/home/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/63-94628f538c677c97.js",
-      "static/chunks/app/home/page-4a6887f49ff8cfa7.js"
-    ],
-    "/crypto/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/crypto/page-fbada7bbb91bdaa0.js"
-    ],
-    "/delphic-signals/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/delphic-signals/page-b450a4a74b5ae51f.js"
-    ],
-    "/dashboard/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/dashboard/page-10241ea7d21a572e.js"
-    ],
-    "/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/page-1c9580947dfa6cbb.js"
-    ],
-    "/performance/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/performance/page-018fc2325ea69a7b.js"
-    ],
-    "/login/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/login/page-6e208e95234ac6bd.js"
-    ],
-    "/proposte/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/proposte/page-6ef914195e1c52a3.js"
-    ],
-    "/radar/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/radar/page-29bc72de511d445a.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/layout.css",
+      "static/chunks/app/layout.js"
     ],
     "/segnali-wall-street/page": [
-      "static/chunks/webpack-590ef4cc5c666b1f.js",
-      "static/chunks/4bd1b696-9a121be019975beb.js",
-      "static/chunks/684-7452f8b474d4d12b.js",
-      "static/chunks/main-app-f1e1cbc784cded69.js",
-      "static/chunks/app/segnali-wall-street/page-5943663fed7eb560.js"
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/segnali-wall-street/page.js"
     ]
   }
 }
