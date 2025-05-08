@@ -1,64 +1,60 @@
 'use client';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
-  const params = useSearchParams();
-  const denied = params.get('denied');
+  const searchParams = useSearchParams();
+  const [form, setForm] = useState({ username: '', password: '' });
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = (e) => {
-    e.preventDefault();
-
-    // ✅ Login corretto: planb / planb
-    if (username === 'planb' && password === 'planb') {
-      document.cookie = 'isLoggedIn=true; path=/';
-      router.push('/home'); // 🔁 Dopo login vai su /home
-    } else {
-      alert('Credenziali errate');
-    }
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    document.cookie = 'isLoggedIn=true; path=/';
+    router.push('/home');
+  };
+
+  const denied = searchParams.get('denied');
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white">
-      <form
-        onSubmit={handleLogin}
-        className="bg-gray-900 p-8 rounded-lg shadow-lg w-full max-w-sm"
-      >
-        <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
-
-        {/* ⚠️ Mostra messaggio se accesso negato */}
-        {denied && (
-          <p className="text-red-500 text-center mb-4">
-            Effettua il login per continuare
-          </p>
-        )}
-
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-4">Accedi</h2>
+        {denied && <p className="text-red-500 mb-4">Accesso negato</p>}
         <input
           type="text"
+          name="username"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
+          value={form.username}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-4"
+          required
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-4 rounded bg-gray-800 border border-gray-700"
+          value={form.password}
+          onChange={handleChange}
+          className="w-full p-2 border rounded mb-4"
+          required
         />
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
-        >
-          Accedi
+        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
+          Login
         </button>
       </form>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Caricamento...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

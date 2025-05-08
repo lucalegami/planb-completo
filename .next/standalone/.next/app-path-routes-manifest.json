@@ -1,0 +1,14 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/logout/route": "/logout",
+  "/crypto/page": "/crypto",
+  "/delphic-signals/page": "/delphic-signals",
+  "/dashboard/page": "/dashboard",
+  "/login/page": "/login",
+  "/page": "/",
+  "/performance/page": "/performance",
+  "/home/page": "/home",
+  "/proposte/page": "/proposte",
+  "/segnali-wall-street/page": "/segnali-wall-street",
+  "/radar/page": "/radar"
+}
