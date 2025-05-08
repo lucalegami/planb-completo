@@ -1,14 +1,14 @@
 {
-  "/_not-found/page": "/_not-found",
   "/logout/route": "/logout",
+  "/_not-found/page": "/_not-found",
+  "/login/page": "/login",
+  "/dashboard/page": "/dashboard",
   "/crypto/page": "/crypto",
   "/delphic-signals/page": "/delphic-signals",
-  "/dashboard/page": "/dashboard",
-  "/login/page": "/login",
   "/page": "/",
-  "/performance/page": "/performance",
-  "/home/page": "/home",
   "/proposte/page": "/proposte",
+  "/performance/page": "/performance",
   "/segnali-wall-street/page": "/segnali-wall-street",
+  "/home/page": "/home",
   "/radar/page": "/radar"
 }
