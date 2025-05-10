@@ -1,22 +1,20 @@
-// functions-src/generate-delphic.js
-
 const fs = require('fs');
 const path = require('path');
 const fetch = (...args) => import('node-fetch').then(res => res.default(...args));
 
 const API_KEY = '5528b8033b7c46c6807ab5ca57bd6445';
-
 const symbols = [
-  'AAPL', 'MSFT', 'AMZN', 'NVDA', 'GOOGL', 'META', 'TSLA', 'BRK.B', 'UNH', 'V',
-  'JNJ', 'XOM', 'WMT', 'JPM', 'MA', 'PG', 'LLY', 'HD', 'CVX', 'MRK', 'PEP',
-  'ABBV', 'AVGO', 'COST', 'KO', 'BAC', 'TMO', 'DIS', 'ADBE', 'PFE', 'CSCO',
-  'NFLX', 'ABT', 'CRM', 'ORCL', 'ACN', 'MCD', 'WFC', 'DHR', 'QCOM', 'INTC',
-  'TXN', 'NEE', 'LIN', 'NKE', 'AMD', 'PM', 'LOW', 'UPS', 'MS'
+  "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK.B", "UNH", "V", "JNJ",
+  "XOM", "WMT", "JPM", "MA", "PG", "LLY", "HD", "CVX", "MRK", "PEP", "ABBV", "AVGO",
+  "COST", "KO", "BAC", "TMO", "DIS", "ADBE", "PFE", "CSCO", "NFLX", "ABT", "CRM",
+  "ORCL", "ACN", "MCD", "WFC", "DHR", "QCOM", "INTC", "TXN", "NEE", "LIN", "NKE",
+  "AMD", "PM", "LOW", "UPS", "MS"
 ];
 
-// Helpers
-function sma(values, n) {
-  return values.slice(0, n).reduce((sum, val) => sum + val, 0) / n;
+// Calcoli matematici
+function sma(values, period, offset = 0) {
+  const slice = values.slice(offset, offset + period);
+  return slice.reduce((sum, v) => sum + v, 0) / period;
 }
 
 function regressionSlope(values) {
@@ -29,65 +27,83 @@ function regressionSlope(values) {
   return num / den;
 }
 
-async function fetchDailyHistory(symbol) {
-  const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1day&outputsize=100&apikey=${API_KEY}`;
+async function fetchHistory(symbol) {
+  const url = `https://api.twelvedata.com/time_series?symbol=${symbol}&interval=1day&outputsize=120&apikey=${API_KEY}`;
   const res = await fetch(url);
   const data = await res.json();
   return data.values || [];
 }
 
-async function processSymbol(symbol) {
-  const data = await fetchDailyHistory(symbol);
-  if (data.length < 60) return null;
+function findEntrySignal(prices, symbol) {
+  const close = prices.map(p => parseFloat(p.close)).reverse();
+  const dates = prices.map(p => p.datetime).reverse();
 
-  const close = data.map(d => parseFloat(d.close));
-  const latestPrice = close[0];
+  if (close.length < 60) return null;
 
-  const sma4 = sma(close, 4);
-  const sma18 = sma(close, 18);
-  const sma40 = sma(close, 40);
-  const slope = regressionSlope(close.slice(0, 100));
+  const slope = regressionSlope(close.slice(-100));
+  const latest = close.length - 1;
 
-  const condition1 = sma18 > sma40;
-  const condition2 = latestPrice > sma18;
-  const condition3 = slope > 0;
-
-  let signal = '⏳ In attesa di condizioni Delphi';
-  if (condition1 && condition2 && condition3) {
-    signal = '🟢 Segnale di acquisto';
-  } else if (!condition3) {
-    signal = '🔻 Tendenza negativa';
+  let trendStartedAt = null;
+  for (let i = 40; i < close.length - 1; i++) {
+    const sma18_y = sma(close, 18, i - 17);
+    const sma40_y = sma(close, 40, i - 39);
+    const sma18_y1 = sma(close, 18, i - 18);
+    const sma40_y1 = sma(close, 40, i - 40);
+    if (sma18_y1 < sma40_y1 && sma18_y > sma40_y) {
+      trendStartedAt = i;
+      break;
+    }
   }
+
+  if (trendStartedAt === null) return null;
+
+  let pullback = false;
+  for (let i = trendStartedAt + 1; i < latest - 1; i++) {
+    const sma18 = sma(close, 18, i - 17);
+    if (close[i] < sma18) {
+      pullback = true;
+      break;
+    }
+  }
+
+  const sma18_now = sma(close, 18, latest - 17);
+  const price_now = close[latest];
+
+  const signal =
+    trendStartedAt &&
+    pullback &&
+    price_now > sma18_now &&
+    slope > 0
+      ? "🟢 ENTRA LONG"
+      : "⏳ In attesa";
 
   return {
     simbolo: symbol,
-    prezzo: latestPrice.toFixed(2),
-    SMA_4: sma4.toFixed(2),
-    SMA_18: sma18.toFixed(2),
-    SMA_40: sma40.toFixed(2),
+    prezzo: price_now.toFixed(2),
+    SMA_4: sma(close, 4, latest - 3).toFixed(2),
+    SMA_18: sma18_now.toFixed(2),
+    SMA_40: sma(close, 40, latest - 39).toFixed(2),
     slope: slope.toFixed(5),
     segnale: signal
   };
 }
 
 async function run() {
-  const entries = [];
+  const results = [];
+
   for (const symbol of symbols) {
     try {
-      const result = await processSymbol(symbol);
-      if (result) entries.push(result);
+      const raw = await fetchHistory(symbol);
+      const entry = findEntrySignal(raw, symbol); // ✅ simbolo corretto
+      if (entry) results.push(entry);
     } catch (err) {
-      console.error('Errore su', symbol, err);
+      console.error(`Errore su ${symbol}:`, err.message);
     }
   }
 
-  const projectRoot = path.join(__dirname, '..'); // vai nella root
-  fs.writeFileSync(
-    path.join(projectRoot, 'public', 'delphic-data.json'),
-    JSON.stringify(entries, null, 2)
-  );
-
-  console.log('✅ Dati scritti con successo');
+  const outputPath = path.join(__dirname, '../public/delphic-data.json');
+  fs.writeFileSync(outputPath, JSON.stringify(results, null, 2));
+  console.log("✅ Strategia Delphic aggiornata con successo.");
 }
 
 run();

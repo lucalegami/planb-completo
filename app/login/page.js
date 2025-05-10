@@ -1,60 +1,31 @@
-'use client';
-import { useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-
-function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [form, setForm] = useState({ username: '', password: '' });
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    document.cookie = 'isLoggedIn=true; path=/';
-    router.push('/home');
-  };
-
-  const denied = searchParams.get('denied');
-
+export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-96">
-        <h2 className="text-2xl font-bold mb-4">Accedi</h2>
-        {denied && <p className="text-red-500 mb-4">Accesso negato</p>}
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full p-2 border rounded mb-4"
-          required
-        />
-        <button type="submit" className="w-full bg-blue-600 text-white p-2 rounded">
-          Login
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#0d1117',
+      color: '#fff',
+      height: '100vh',
+      padding: '2rem'
+    }}>
+      <form style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        maxWidth: '400px',
+        width: '100%',
+        background: '#161b22',
+        padding: '2rem',
+        borderRadius: '10px'
+      }}>
+        <h1 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Login</h1>
+        <input type="email" placeholder="Email" style={{ padding: '0.75rem' }} />
+        <input type="password" placeholder="Password" style={{ padding: '0.75rem' }} />
+        <button type="submit" style={{ padding: '0.75rem', backgroundColor: '#00bfff', color: '#000', fontWeight: 'bold' }}>
+          Accedi
         </button>
       </form>
     </div>
-  );
-}
-
-export default function Page() {
-  return (
-    <Suspense fallback={<div>Caricamento...</div>}>
-      <LoginForm />
-    </Suspense>
   );
 }

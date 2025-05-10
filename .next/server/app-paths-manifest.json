@@ -1,3 +1,8 @@
 {
+  "/proposte/page": "app/proposte/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/home/page": "app/home/page.js",
+  "/login/page": "app/login/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
   "/segnali-wall-street/page": "app/segnali-wall-street/page.js"
 }

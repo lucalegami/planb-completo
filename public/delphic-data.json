@@ -1,74 +1,47 @@
 [
   {
     "simbolo": "AAPL",
-    "prezzo": "198.63",
-    "SMA_4": "198.07",
-    "SMA_18": "203.10",
-    "SMA_40": "206.58",
-    "slope": "0.56138",
-    "segnale": "⏳ In attesa di condizioni Delphi"
+    "prezzo": "199.09",
+    "SMA_4": "197.84",
+    "SMA_18": "202.85",
+    "SMA_40": "206.29",
+    "slope": "-0.56496",
+    "segnale": "⏳ In attesa"
   },
   {
     "simbolo": "MSFT",
-    "prezzo": "441.50",
-    "SMA_4": "436.08",
-    "SMA_18": "398.77",
-    "SMA_40": "389.41",
-    "slope": "0.56670",
-    "segnale": "🟢 Segnale di acquisto"
-  },
-  {
-    "simbolo": "AMZN",
-    "prezzo": "193.16",
-    "SMA_4": "188.31",
-    "SMA_18": "183.23",
-    "SMA_40": "187.51",
-    "slope": "0.60897",
-    "segnale": "⏳ In attesa di condizioni Delphi"
+    "prezzo": "438.26",
+    "SMA_4": "435.77",
+    "SMA_18": "401.39",
+    "SMA_40": "390.81",
+    "slope": "-0.52444",
+    "segnale": "⏳ In attesa"
   },
   {
     "simbolo": "NVDA",
-    "prezzo": "118.09",
-    "SMA_4": "115.63",
-    "SMA_18": "108.90",
-    "SMA_40": "110.37",
-    "slope": "0.38109",
-    "segnale": "⏳ In attesa di condizioni Delphi"
-  },
-  {
-    "simbolo": "GOOGL",
-    "prezzo": "155.66",
-    "SMA_4": "158.62",
-    "SMA_18": "157.50",
-    "SMA_40": "158.10",
-    "slope": "0.52903",
-    "segnale": "⏳ In attesa di condizioni Delphi"
-  },
-  {
-    "simbolo": "META",
-    "prezzo": "604.04",
-    "SMA_4": "596.86",
-    "SMA_18": "547.35",
-    "SMA_40": "563.11",
-    "slope": "0.98644",
-    "segnale": "⏳ In attesa di condizioni Delphi"
+    "prezzo": "116.69",
+    "SMA_4": "116.16",
+    "SMA_18": "109.19",
+    "SMA_40": "110.38",
+    "slope": "-0.37615",
+    "segnale": "⏳ In attesa"
   },
   {
     "simbolo": "TSLA",
-    "prezzo": "287.27",
-    "SMA_4": "279.78",
-    "SMA_18": "266.50",
-    "SMA_40": "259.90",
-    "slope": "2.28213",
-    "segnale": "🟢 Segnale di acquisto"
+    "prezzo": "298.49",
+    "SMA_4": "283.72",
+    "SMA_18": "268.92",
+    "SMA_40": "261.29",
+    "slope": "-2.24621",
+    "segnale": "⏳ In attesa"
   },
   {
     "simbolo": "BRK.B",
-    "prezzo": "516.05",
-    "SMA_4": "514.69",
-    "SMA_18": "524.28",
-    "SMA_40": "522.45",
-    "slope": "-0.94890",
-    "segnale": "🔻 Tendenza negativa"
+    "prezzo": "514.54",
+    "SMA_4": "514.58",
+    "SMA_18": "523.29",
+    "SMA_40": "522.64",
+    "slope": "0.94097",
+    "segnale": "⏳ In attesa"
   }
 ]

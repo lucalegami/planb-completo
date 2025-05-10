@@ -28,10 +28,10 @@ export default function HomePage() {
             LOG IN
           </a>
           <a
-            href="/signin"
+            href="/signup"
             className="bg-white text-blue-800 hover:text-white hover:bg-blue-600 px-6 py-3 rounded-lg text-lg"
           >
-            SIGN IN
+            SIGN UP
           </a>
         </div>
       </div>

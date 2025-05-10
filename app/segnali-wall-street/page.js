@@ -1,73 +1,50 @@
-// app/segnali-wall-street/page.js
 'use client';
 import { useEffect, useState } from 'react';
 
 export default function SegnaliWallStreet() {
-  const [data, setData] = useState([]);
-  const [errore, setErrore] = useState(false);
+  const [dati, setDati] = useState([]);
+  const [ultima, setUltima] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('/delphic-data.json');
-        const json = await res.json();
-        setData(json);
-      } catch (err) {
-        setErrore(true);
-      }
-    };
+    async function fetchData() {
+      const res = await fetch('/delphic-data.json');
+      const json = await res.json();
+      setDati(json);
 
+      const ultimaOra = json.length ? new Date().toLocaleString('it-IT') : null;
+      setUltima(ultimaOra);
+    }
     fetchData();
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">📊 Segnali Wall Street (Strategia Delphic)</h1>
-
-      {errore ? (
-        <p className="text-red-500 text-center">❌ Errore nel recupero dei dati</p>
-      ) : data.length === 0 ? (
-        <p className="text-center">Caricamento...</p>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full table-auto border-collapse border border-gray-700">
-            <thead>
-              <tr className="bg-gray-800">
-                <th className="p-3 border border-gray-700">Simbolo</th>
-                <th className="p-3 border border-gray-700">Prezzo</th>
-                <th className="p-3 border border-gray-700">SMA 4</th>
-                <th className="p-3 border border-gray-700">SMA 18</th>
-                <th className="p-3 border border-gray-700">SMA 40</th>
-                <th className="p-3 border border-gray-700">Slope</th>
-                <th className="p-3 border border-gray-700">Segnale</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((item, index) => (
-                <tr key={index} className="text-center hover:bg-gray-800 transition">
-                  <td className="p-3 border border-gray-700 font-bold">{item.simbolo}</td>
-                  <td className="p-3 border border-gray-700">${item.prezzo}</td>
-                  <td className="p-3 border border-gray-700">{item.SMA_4}</td>
-                  <td className="p-3 border border-gray-700">{item.SMA_18}</td>
-                  <td className="p-3 border border-gray-700">{item.SMA_40}</td>
-                  <td className="p-3 border border-gray-700">{item.slope}</td>
-                  <td
-                    className={`p-3 border border-gray-700 font-semibold ${
-                      item.segnale.includes('🟢')
-                        ? 'text-green-400'
-                        : item.segnale.includes('🔻')
-                        ? 'text-red-400'
-                        : 'text-yellow-400'
-                    }`}
-                  >
-                    {item.segnale}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+    <main className="wallstreet-container">
+      <h1>📊 Segnali Wall Street – Strategia Plan B</h1>
+      {ultima && <div className="last-update">Ultimo aggiornamento: {ultima}</div>}
+      <div className="grid-container">
+        {dati.map((entry, i) => (
+          <div key={i} className="card">
+            <h2>
+              <span
+                className={`dot ${
+                  entry.segnale.includes('ENTRA LONG')
+                    ? 'green'
+                    : entry.segnale.includes('TENDENZA NEGATIVA')
+                    ? 'red'
+                    : 'gray'
+                }`}
+              ></span>
+              {entry.simbolo}
+            </h2>
+            <p>📈 Prezzo: ${entry.prezzo}</p>
+            <p>🟡 SMA 4: {entry.SMA_4}</p>
+            <p>🟠 SMA 18: {entry.SMA_18}</p>
+            <p>🔵 SMA 40: {entry.SMA_40}</p>
+            <p>📐 Slope: {entry.slope}</p>
+            <p className="segnale">{entry.segnale}</p>
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
